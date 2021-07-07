@@ -8,6 +8,9 @@ from datetime import datetime
 def error_db():
     print("[-] Error! Couldn't get the Google Hacking Database") 
 
+def gather_done():
+    print("[+] Local GHD succesfully updated")
+
 # First, retrieve all dorks from exploit-db
 def get_dorks():
     database_url = "https://www.exploit-db.com/google-hacking-database"
@@ -33,23 +36,26 @@ def get_dorks():
     json_page = req_db.json()
     # json hierarchy : data -> url_title -> intitle
 
+    # Save dorks to a local file
+    dorks_file = open("ghd.dorks", "w")
+
     # 1. Filter by data json type
     page_data = json_page["data"]
- 
+
     # 2. Filter by url_title type  
     for url in range(len(page_data)):
         iter_soup = BeautifulSoup(page_data[url]["url_title"], "html.parser") 
         # Filter the exact dorks we need
         dork = iter_soup.find("a").contents[0]
-        print(dork)
-
-    # Save dorks to a local file
+        dorks_file.write(dork)
+        dorks_file.write("\n")
+        
+    return dorks_file
 
 def get_file_timestamp():
     # TODO scraper.py difference time 
-    file_time = os.stat("README").st_mtime
+    file_time = os.stat("scraper.py").st_mtime
     diff_time = (time.time() - file_time) / 86400
-    print("days = ", diff_time)
 
     return diff_time
 
@@ -59,8 +65,10 @@ def update_check():
 
     # Time limit set to 1 day
     if time_chk < 1:
-        print("[!] Your Google Hacking Database may be outdated. You can try to update it running scraper.py.")
+        print("[!] Your local Google Hacking Database may be outdated. You can try to update it running scraper.py.")
+
 
 get_dorks()
 update_check()
 get_file_timestamp()
+gather_done()
