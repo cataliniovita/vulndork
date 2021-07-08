@@ -52,5 +52,6 @@ def get_dorks():
         
     return dorks_file
 
-get_dorks()
-gather_done()
+if __name__ == "__main__":
+    get_dorks()
+    gather_done()
