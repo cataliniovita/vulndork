@@ -3,6 +3,7 @@ import time
 import random
 import numpy
 import argparse
+from googlesearch import search
 from pathlib import Path
 
 def info_usage():
@@ -22,7 +23,6 @@ def db_exists():
 
 # Calculate file timestamp for update_check
 def get_file_timestamp():
-    # TODO scraper.py difference time
     file_time = os.stat("ghd.dorks").st_mtime
     diff_time = (time.time() - file_time) / 86400
 
@@ -53,7 +53,6 @@ if __name__ == "__main__":
 
         parser = argparse.ArgumentParser(description='Usage scraper.py [-h] [-d] <url>')
         parser.add_argument('-d', dest="domain", action="store", required=False, help="Scan a domain for dork vulns")
-
         args = parser.parse_args()
 
         if args.domain:
@@ -63,15 +62,24 @@ if __name__ == "__main__":
                 current_dork = dorks_file.readline()
                 add_site = "site:" + args.domain + " " + current_dork
                 add_site = add_site.strip('\n')
-                print(add_site)
+                #print(add_site)
 
                 if not current_dork:
+                    # TODO Raport the results
+                    # Create a list containing vulnerable dorks
+                    print("[+] All dorks parsed")
                     break 
 
         else:
             print("Yea")
             
         dorks_file.close()
+    
+    query = "site:cymed.ro"
+    d_results = search(query, num_results=100)
 
-    else:
-        print("Not working")
+    for result in d_results:
+        if result is None:
+            print("No page found")
+        else:
+            print(result)
