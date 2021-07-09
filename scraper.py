@@ -37,7 +37,7 @@ def get_dorks():
     # json hierarchy : data -> url_title -> intitle
 
     # Save dorks to a local file
-    dorks_file = open("ghd.dorks", "w")
+    dorks_file = open("ghdb.dorks", "w")
 
     # 1. Filter by data json type
     page_data = json_page["data"]
