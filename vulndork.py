@@ -55,7 +55,7 @@ def add_params(parser):
             help="scan a web-site for dork vulns")
     parser.add_argument(
             '-m',
-            dest="urls or file",
+            dest="urlsfile",
             action="store",
             required=False,
             help="scan multiple clients for dork vulns")

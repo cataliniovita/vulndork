@@ -17,7 +17,7 @@ def get_dorks():
 
     # Need some headers for browser mimic
     # TODO make a variable User-Agent
-    headers  = {
+    headers = {
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
         "Accept-Encoding": "deflate, gzip, br",
         "Accept-Language": "en-US,en;q=0.5",
