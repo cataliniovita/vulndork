@@ -3,7 +3,7 @@ import time
 import random
 import numpy
 import argparse
-from googlesearch import search
+import googlesearch 
 from pathlib import Path
 
 def info_usage():
@@ -48,11 +48,11 @@ def update_check():
 # Add parameters to our program
 def add_params(parser):
     parser.add_argument(
-                '-u',
-                dest="url",
-                action="store",
-                required=True,
-                help="scan a web-site for dork vulns")
+            '-u',
+            dest="url",
+            action="store",
+            required=True,
+            help="scan a web-site for dork vulns")
     parser.add_argument(
             '-m',
             dest="urls or file",
@@ -65,6 +65,12 @@ def add_params(parser):
             action="store",
             required=False,
             help="save scan result to file")
+    parser.add_argument(
+            '-l',
+            dest="limit",
+            action="store",
+            required=False,
+            help="set limit time between requests (1s by default)")
 
 # Save output to a file (-o option from params)
 def save_output(args, dorks_results):
@@ -79,6 +85,14 @@ def save_output(args, dorks_results):
         outfile.close()
 
 def parse_dorks(args, dfile):
+    dorks_results = []
+
+    # Set limit for requests
+    if args.limit:
+        limit = args.limit
+    else:
+        limit = 1
+
     if args.url:
         # Parse the file which contains the dorks and add the "site:" query into every line
         # Also send a request to google
@@ -86,9 +100,12 @@ def parse_dorks(args, dfile):
             current_dork = dfile.readline()
             add_site = "site:" + args.url + " " + current_dork
             add_site = add_site.strip('\n')
-
-            dorks_results = search(add_site, num_results=1)
-            time.sleep(2)
+ 
+            dorks_results = googlesearch.search(
+                    add_site,
+                    start=0,
+                    num=2,
+                    pause=limit)
 
             if not current_dork:
                 # TODO Raport the results
@@ -103,9 +120,9 @@ def parse_dorks(args, dfile):
 
 if __name__ == "__main__":
     if db_exists() == True:
-        ghdb_file = Path("ghdb.dorks")
         dorks_file = open("ghdb.dorks", "r")
 
+        # Create parser for arguments
         parser = argparse.ArgumentParser(
                 description='Vulndork v0.1 - web-site vulnerability scanner based on Google Dorks',
                 epilog="Vulndork is a web-site vulnerability scanner which uses the Google Hacking Database, available on exploit-db")
@@ -113,7 +130,12 @@ if __name__ == "__main__":
         add_params(parser)
         args = parser.parse_args()
 
+        # Parse dorks from dorks file
         dorks_results = parse_dorks(args, dorks_file)
-        save_output(args, dorks_results)
 
+        # Save output into a file, in case of '-o' option was selected
+        save_output(args, dorks_results)
         dorks_file.close()
+
+    else:
+        print(" ")
