@@ -89,9 +89,11 @@ def parse_dorks(args, dfile):
 
     # Set limit for requests
     if args.limit:
-        limit = args.limit
+        limit = int(args.limit)
     else:
         limit = 1
+
+    random_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36"
 
     if args.url:
         # Parse the file which contains the dorks and add the "site:" query into every line
@@ -104,8 +106,9 @@ def parse_dorks(args, dfile):
             dorks_results = googlesearch.search(
                     add_site,
                     start=0,
-                    num=2,
-                    pause=limit)
+                    num=1,
+                    pause=int(limit),
+                    user_agent=random_user_agent)
 
             if not current_dork:
                 # TODO Raport the results
@@ -127,6 +130,7 @@ if __name__ == "__main__":
                 description='Vulndork v0.1 - web-site vulnerability scanner based on Google Dorks',
                 epilog="Vulndork is a web-site vulnerability scanner which uses the Google Hacking Database, available on exploit-db")
 
+        # Add parameters to the parser
         add_params(parser)
         args = parser.parse_args()
 
@@ -136,6 +140,6 @@ if __name__ == "__main__":
         # Save output into a file, in case of '-o' option was selected
         save_output(args, dorks_results)
         dorks_file.close()
-
+        
     else:
         print(" ")
