@@ -1,6 +1,6 @@
 import os
 import time
-import random
+import sys
 import numpy
 import argparse
 import googlesearch 
@@ -41,7 +41,6 @@ def update_check():
         if hour_time < 1:
             hour_time = hour_time + 1
             print("[!] Your local Google Hacking Database was updated", int(hour_time), "hour ago") 
-
         else:
             print("[!] Your local Google Hacking Database was updated", int(hour_time), "hours ago") 
 
@@ -84,7 +83,7 @@ def save_output(args, dorks_results):
 
         outfile.close()
 
-def parse_dorks(args, dfile):
+def parse_dorks(args, dfile, multiple_str):
     dorks_results = []
 
     # Set limit for requests
@@ -95,38 +94,49 @@ def parse_dorks(args, dfile):
 
     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36"
 
-    if args.url:
-        # Parse the file which contains the dorks and add the "site:" query into every line
-        # Also send a request to google
-        while True:
-            current_dork = dfile.readline()
+    # Parse the file which contains the dorks and add the "site:" query into every line
+    # Also send a request to google
+    while True:
+        current_dork = dfile.readline()
+            
+        if args.urlsfile:
+            add_site = multiple_str + " " + current_dork
+            add_site = add_site.strip('\n')
+        elif args.url:
             add_site = "site:" + args.url + " " + current_dork
             add_site = add_site.strip('\n')
+        else:
+            print("[-] No url or multiple urls found")
+            return
  
-            dorks_results = googlesearch.search(
-                    add_site,
-                    start=0,
-                    num=1,
-                    pause=int(limit),
-                    user_agent=user_agent)
+        dorks_results = googlesearch.search(
+                add_site,
+                start=0,
+                num=1,
+                pause=int(limit),
+                user_agent=user_agent)
 
-            if not current_dork:
-                # TODO Raport the results
-                # Create a list containing vulnerable dorks
-                print("[+] All dorks parsed")
-                break
+        if not current_dork:
+            # TODO Raport the results
+            # Create a list containing vulnerable dorks
+            print("[+] All dorks parsed")
+            break
 
-            for result in dorks_results:
-                 print(result)
+        for result in dorks_results:
+            print(result)
 
     return dorks_results
 
 def multiple_clients(args):
-    c_file = open("clients.txt", "r")
-    ret_file = open("clients.txt", "r")
-    client_string = ""
+    try:
+        c_file = open(args.urlsfile, "r")
+        ret_file = open(args.urlsfile, "r")
+    except FileNotFoundError:
+        print("[-] File " + "\"" + args.urlsfile + "\"" + " not found on your system")
+        return ""
 
     # Create an increment to get last line
+    client_string = ""
     incr = 0
     len_f = len(ret_file.readlines()) 
     # Create multiple queries for clients
@@ -162,16 +172,16 @@ if __name__ == "__main__":
         add_params(parser)
         args = parser.parse_args()
 
-        # Parse dorks from dorks file
-        #dorks_results = parse_dorks(args, dorks_file)
-
-        # Check for multiple clients scan
-        multiple_clients(args)
-
-        # Save output into a file, in case of '-o' option was selected
-        #save_output(args, dorks_results)
-
-        dorks_file.close()
-        
+        if len(sys.argv) < 1:
+            # Check for multiple clients scan
+            multiple_cstr = multiple_clients(args)
+            # Parse dorks from dorks file
+            dorks_results = parse_dorks(args, dorks_file, multiple_cstr)
+            # Save output into a file, in case of '-o' option was selected
+            save_output(args, dorks_results)
+            dorks_file.close()
+        else:
+            print("Use 'python3 vulndork.py --help' for commands help")
+            
     else:
         print(" ")
