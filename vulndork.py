@@ -51,7 +51,7 @@ def add_params(parser):
             '-u',
             dest="url",
             action="store",
-            required=True,
+            required=False,
             help="scan a web-site for dork vulns")
     parser.add_argument(
             '-m',
@@ -93,7 +93,7 @@ def parse_dorks(args, dfile):
     else:
         limit = 1
 
-    random_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36"
+    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36"
 
     if args.url:
         # Parse the file which contains the dorks and add the "site:" query into every line
@@ -108,7 +108,7 @@ def parse_dorks(args, dfile):
                     start=0,
                     num=1,
                     pause=int(limit),
-                    user_agent=random_user_agent)
+                    user_agent=user_agent)
 
             if not current_dork:
                 # TODO Raport the results
@@ -121,6 +121,34 @@ def parse_dorks(args, dfile):
 
     return dorks_results
 
+def multiple_clients(args):
+    c_file = open("clients.txt", "r")
+    ret_file = open("clients.txt", "r")
+    client_string = ""
+
+    # Create an increment to get last line
+    incr = 0
+    len_f = len(ret_file.readlines()) 
+    # Create multiple queries for clients
+    if args.urlsfile:
+        while True:
+            client = c_file.readline()
+            incr += 1
+
+            if not client:
+                break
+
+            client_string += "site:"
+            client_string += client
+            client_string = client_string.rstrip("\n")
+
+            if incr != len_f:
+                client_string += " | "
+
+    print(client_string)
+
+    return client_string
+             
 if __name__ == "__main__":
     if db_exists() == True:
         dorks_file = open("ghdb.dorks", "r")
@@ -135,10 +163,14 @@ if __name__ == "__main__":
         args = parser.parse_args()
 
         # Parse dorks from dorks file
-        dorks_results = parse_dorks(args, dorks_file)
+        #dorks_results = parse_dorks(args, dorks_file)
+
+        # Check for multiple clients scan
+        multiple_clients(args)
 
         # Save output into a file, in case of '-o' option was selected
-        save_output(args, dorks_results)
+        #save_output(args, dorks_results)
+
         dorks_file.close()
         
     else:
