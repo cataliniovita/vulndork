@@ -15,7 +15,6 @@ def db_exists():
     try:
         abs_path = ghdb_file.resolve(strict=True)
     except FileNotFoundError:
-        print("[-] Google Hacking Database not found on your system. Run $ python3 scraper.py to retrieve the dorks")
         return False
     else:
         update_check()
@@ -65,11 +64,11 @@ def add_params(parser):
             required=False,
             help="save scan result to file")
     parser.add_argument(
-            '-l',
-            dest="limit",
+            '-d',
+            dest="delay",
             action="store",
             required=False,
-            help="set limit time between requests (1s by default)")
+            help="set delay time between requests (1s by default)")
 
 # Save output to a file (-o option from params)
 def save_output(args, dorks_results):
@@ -85,11 +84,11 @@ def save_output(args, dorks_results):
 
 def parse_dorks(args, dfile, multiple_str):
     dorks_results = []
-    # Set limit for requests
-    if args.limit:
-        limit = int(args.limit)
+    # Set delay for requests
+    if args.delay:
+        delay = int(args.delay)
     else:
-        limit = 1
+        delay  = 1
 
     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36"
     # Parse the file which contains the dorks and add the "site:" query into every line
@@ -112,7 +111,7 @@ def parse_dorks(args, dfile, multiple_str):
                 add_site,
                 start=0,
                 num=2,
-                pause=int(limit),
+                pause=int(delay),
                 user_agent=user_agent)
 
         if not current_dork:
@@ -155,7 +154,7 @@ def multiple_clients(args):
                 client_string += " | "
 
     return client_string
-             
+ 
 if __name__ == "__main__":
     if db_exists() == True:
         dorks_file = open("ghdb.dorks", "r")
@@ -169,12 +168,16 @@ if __name__ == "__main__":
         add_params(parser)
         args = parser.parse_args()
 
-        # Check for multiple clients scan
-        multiple_cstr = multiple_clients(args)
-        # Parse dorks from dorks file
-        dorks_results = parse_dorks(args, dorks_file, multiple_cstr)
-        # Save output into a file, in case of '-o' option was selected
-        #save_output(args, dorks_results)
+        if len(sys.argv) > 1:
+            # Check for multiple clients scan
+            multiple_cstr = multiple_clients(args)
+            # Parse dorks from dorks file
+            dorks_results = parse_dorks(args, dorks_file, multiple_cstr)
+            # Save output into a file, in case of '-o' option was selected
+            #save_output(args, dorks_results)
+        else:
+            print("usage: vulndork.py [-h] [-u URL] [-m URLSFILE] [-o OUTPUTFILE] [-d DELAY]")
+            print("use vulndork.py --help for more info")
         
     else:
-        print(" ")
+        print("[-] Google Hacking Database not found. Run $ python3 scraper.py to retrieve the dorks")
