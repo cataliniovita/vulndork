@@ -197,7 +197,7 @@ def multiple_clients(args):
  
 def test_stem():
     with Controller.from_port(port = 9051) as controller:
-        controller.authenticate(password='your password set for tor controller port in torrc')
+        controller.authenticate(password='cymedtor')
         print("Success!")
         controller.signal(Signal.NEWNYM)
         print("New Tor connection processed")
