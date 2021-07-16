@@ -93,6 +93,7 @@ def tor_session_cfg():
     session = requests.session()
     session.proxies = {'http': 'socks5://127.0.0.1:9050',
                        'https': 'socks5://127.0.0.1:9050'}
+
     return session
 
 # Scrape the google search
@@ -195,12 +196,11 @@ def multiple_clients(args):
 
     return client_string
  
-def test_stem():
+def renew_ip():
     with Controller.from_port(port = 9051) as controller:
         controller.authenticate(password='cymedtor')
-        print("Success!")
         controller.signal(Signal.NEWNYM)
-        print("New Tor connection processed")
+        print("[-] Your ip has been renewed")
 
 if __name__ == "__main__":
     if db_exists() == True:
@@ -230,16 +230,12 @@ if __name__ == "__main__":
         #
         #google_search("yup")
 
-        session = tor_session_cfg()
-
-        session = tor_session_cfg()
-        print(session.get("http://httpbin.org/ip").text)
-        # Above should print an IP different than your public IP
-
-        # Following prints your normal public IP
-        print(requests.get("http://httpbin.org/ip").text)
-
-        test_stem()
+        for i in range(4):
+            session = tor_session_cfg()
+            print(session.get("http://httpbin.org/ip").text)
+            print(requests.get("http://httpbin.org/ip").text)
+            time.sleep(5)
+            renew_ip()
 
     else:
         print("[-] Google Hacking Database not found. Run $ python3 scraper.py to retrieve the dorks")
