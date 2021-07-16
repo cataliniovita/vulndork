@@ -3,11 +3,15 @@ import time
 import sys
 import numpy
 import argparse
+import requests
 import googlesearch 
 from pathlib import Path
 
 def info_usage():
     print("Usage: python3 vulndork") 
+
+def error_gs():
+    print("[-] Error! Couldn't send the get request") 
 
 def db_exists():
     ghdb_file = Path("ghdb.dorks")
@@ -74,13 +78,38 @@ def add_params(parser):
 def save_output(args, dorks_results):
     if args.outputfile:
         outfile = open(args.outputfile, "w")
-        orks_len = len(dorks_results)
+        dorks_len = len(dorks_results)
 
         for i in range(dorks_len):
             print(dorks_results[i])
             outfile.write(dorks_results[i])
 
         outfile.close()
+
+# Scrape the google search
+def google_search():
+    base_query = "https://google.com/search?q="
+    print("Yes")
+
+    headers = {
+        "Host": "google.com",
+        "Connection": "close",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept-Language": "en-US,en;q=0.9",
+    }
+
+    base_query = base_query + "a"
+    req_gs = requests.get(base_query, headers=headers, verify=True, allow_redirects=False)
+
+    print(req_gs.status_code)
+
+    if req_gs.status_code != 200:
+        error_gs()
+        return
+
+    json_gs = req_gs.json()
 
 def parse_dorks(args, dfile, multiple_str):
     dorks_results = []
@@ -110,7 +139,7 @@ def parse_dorks(args, dfile, multiple_str):
         dorks_results = googlesearch.search(
                 add_site,
                 start=0,
-                num=2,
+                num=4,
                 pause=int(delay),
                 user_agent=user_agent)
 
@@ -159,25 +188,29 @@ if __name__ == "__main__":
     if db_exists() == True:
         dorks_file = open("ghdb.dorks", "r")
 
-        # Create parser for arguments
-        parser = argparse.ArgumentParser(
-                description='Vulndork v0.1 - web-site vulnerability scanner based on Google Dorks',
-                epilog="Vulndork is a web-site vulnerability scanner which uses the Google Hacking Database, available on exploit-db")
+        ## Create parser for arguments
+        #parser = argparse.ArgumentParser(
+        #        description='Vulndork v0.1 - web-site vulnerability scanner based on Google Dorks',
+        #        epilog="Vulndork is a web-site vulnerability scanner which uses the Google Hacking Database, available on exploit-db")
 
-        # Add parameters to the parser
-        add_params(parser)
-        args = parser.parse_args()
+        ## Add parameters to the parser
+        #add_params(parser)
+        #args = parser.parse_args()
 
-        if len(sys.argv) > 1:
-            # Check for multiple clients scan
-            multiple_cstr = multiple_clients(args)
-            # Parse dorks from dorks file
-            dorks_results = parse_dorks(args, dorks_file, multiple_cstr)
-            # Save output into a file, in case of '-o' option was selected
-            #save_output(args, dorks_results)
-        else:
-            print("usage: vulndork.py [-h] [-u URL] [-m URLSFILE] [-o OUTPUTFILE] [-d DELAY]")
-            print("use vulndork.py --help for more info")
-        
+        #if len(sys.argv) > 1:
+        #    multiple_cstr = ""
+        #    # Check for multiple clients scan
+        #    if args.urlsfile:
+        #        multiple_cstr = multiple_clients(args)
+        #    # Parse dorks from dorks file
+        #    dorks_results = parse_dorks(args, dorks_file, multiple_cstr)
+        #    # Save output into a file, in case of '-o' option was selected
+        #    save_output(args, dorks_results)
+        #else:
+        #    print("usage: vulndork.py [-h] [-u URL] [-m URLSFILE] [-o OUTPUTFILE] [-d DELAY]")
+        #    print("use vulndork.py --help for more info")
+        #
+        google_search()
+
     else:
         print("[-] Google Hacking Database not found. Run $ python3 scraper.py to retrieve the dorks")
