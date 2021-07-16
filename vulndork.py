@@ -6,6 +6,8 @@ import argparse
 import requests
 import googlesearch 
 from pathlib import Path
+from stem import Signal
+from stem.control import Controller
 
 def info_usage():
     print("Usage: python3 vulndork") 
@@ -86,8 +88,15 @@ def save_output(args, dorks_results):
 
         outfile.close()
 
+# Create a tor session
+def tor_session_cfg():
+    session = requests.session()
+    session.proxies = {'http': 'socks5://127.0.0.1:9050',
+                       'https': 'socks5://127.0.0.1:9050'}
+    return session
+
 # Scrape the google search
-def google_search():
+def google_search(query):
     base_query = "https://google.com/search?q="
     print("Yes")
 
@@ -110,6 +119,8 @@ def google_search():
         return
 
     json_gs = req_gs.json()
+
+    print(json_gs)
 
 def parse_dorks(args, dfile, multiple_str):
     dorks_results = []
@@ -184,6 +195,13 @@ def multiple_clients(args):
 
     return client_string
  
+def test_stem():
+    with Controller.from_port(port = 9051) as controller:
+        controller.authenticate(password='your password set for tor controller port in torrc')
+        print("Success!")
+        controller.signal(Signal.NEWNYM)
+        print("New Tor connection processed")
+
 if __name__ == "__main__":
     if db_exists() == True:
         dorks_file = open("ghdb.dorks", "r")
@@ -210,7 +228,18 @@ if __name__ == "__main__":
         #    print("usage: vulndork.py [-h] [-u URL] [-m URLSFILE] [-o OUTPUTFILE] [-d DELAY]")
         #    print("use vulndork.py --help for more info")
         #
-        google_search()
+        #google_search("yup")
+
+        session = tor_session_cfg()
+
+        session = tor_session_cfg()
+        print(session.get("http://httpbin.org/ip").text)
+        # Above should print an IP different than your public IP
+
+        # Following prints your normal public IP
+        print(requests.get("http://httpbin.org/ip").text)
+
+        test_stem()
 
     else:
         print("[-] Google Hacking Database not found. Run $ python3 scraper.py to retrieve the dorks")
