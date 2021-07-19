@@ -7,6 +7,8 @@ import googlesearch
 from pathlib import Path
 from stem import Signal
 from stem.control import Controller
+from random_user_agent.user_agent import UserAgent
+from random_user_agent.params import SoftwareName, OperatingSystem
 
 def info_usage():
     print("Usage: python3 vulndork") 
@@ -31,6 +33,16 @@ def get_file_timestamp():
     diff_time = (time.time() - file_time) / 86400
 
     return diff_time
+
+# Create a user agent list with 100 default size
+def user_agent_rotate():
+    software_names = [SoftwareName.CHROME.value]
+    operating_systems = [OperatingSystem.WINDOWS.value, OperatingSystem.LINUX.value]
+
+    user_agent_rot = UserAgent(software_names=software_names, operating_systems=operating_systems, limit=100)
+
+    # Return user_agent_rotator
+    return user_agent_rot
 
 # Check if an update is needed
 def update_check():
@@ -113,7 +125,9 @@ def google_search(query):
     }
 
     base_query = base_query + "a"
-    req_gs = requests.get(base_query, headers=headers, verify=True, allow_redirects=False)
+    print(base_query)
+    session = tor_session_cfg()
+    req_gs = session.get(base_query)
 
     print(req_gs.status_code)
 
@@ -133,14 +147,27 @@ def parse_dorks(args, dfile, multiple_str):
     else:
         delay  = 1
 
-    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36"
+    user_agent_rotator = user_agent_rotate()
+    user_agent = user_agent_rotator.get_random_user_agent()
+
+    test_flag = 0
+
     # Parse the file which contains the dorks and add the "site:" query into every line
     # Also send a request to google
     while True:
         current_dork = dfile.readline()
         dorks_results = []
             
+        # Create a new tor session
         session = tor_session_cfg()
+
+        if test_flag == 0:
+            renew_ip()
+                
+        test_flag += 1
+        # Rotate user agent
+        user_agent = user_agent_rotator.get_random_user_agent()
+        print("[+] Your User Agent is: " + user_agent)
 
         if args.urlsfile:
             add_site = multiple_str + " " + current_dork
@@ -153,6 +180,7 @@ def parse_dorks(args, dfile, multiple_str):
             print("[-] No url or multiple urls found")
             return
  
+        # Make the proper google search
         dorks_results += googlesearch.search(
                 add_site,
                 start=0,
@@ -172,8 +200,9 @@ def parse_dorks(args, dfile, multiple_str):
                 print(result)
         # Sleep 1 second if we don't find any results (need for renew_ip delay)
         else:
-            time.sleep(1)
+            time.sleep(2)
 
+        # Renew our IP address for the next tor session
         renew_ip()
 
     return dorks_results
@@ -219,27 +248,29 @@ if __name__ == "__main__":
         dorks_file = open("ghdb.dorks", "r")
 
         # Create parser for arguments
-        parser = argparse.ArgumentParser(
-                description='Vulndork v0.1 - web-site vulnerability scanner based on Google Dorks',
-                epilog="Vulndork is a web-site vulnerability scanner which uses the Google Hacking Database, available on exploit-db")
+        #parser = argparse.ArgumentParser(
+        #        description='Vulndork v0.1 - web-site vulnerability scanner based on Google Dorks',
+        #        epilog="Vulndork is a web-site vulnerability scanner which uses the Google Hacking Database, available on exploit-db")
 
-        # Add parameters to the parser
-        add_params(parser)
-        args = parser.parse_args()
+        ## Add parameters to the parser
+        #add_params(parser)
+        #args = parser.parse_args()
 
-        if len(sys.argv) > 1:
-            multiple_cstr = ""
-            # Check for multiple clients scan
-            if args.urlsfile:
-                multiple_cstr = multiple_clients(args)
-            # Parse dorks from dorks file
-            dorks_results = parse_dorks(args, dorks_file, multiple_cstr)
-            # Save output into a file, in case of '-o' option was selected
-            save_output(args, dorks_results)
-        else:
-            print("usage: vulndork.py [-h] [-u URL] [-m URLSFILE] [-o OUTPUTFILE] [-d DELAY]")
-            print("use vulndork.py --help for more info")
-        
+        google_search("a")
+
+        #if len(sys.argv) > 1:
+        #    multiple_cstr = ""
+        #    # Check for multiple clients scan
+        #    if args.urlsfile:
+        #        multiple_cstr = multiple_clients(args)
+        #    # Parse dorks from dorks file
+        #    dorks_results = parse_dorks(args, dorks_file, multiple_cstr)
+        #    # Save output into a file, in case of '-o' option was selected
+        #    save_output(args, dorks_results)
+        #else:
+        #    print("usage: vulndork.py [-h] [-u URL] [-m URLSFILE] [-o OUTPUTFILE] [-d DELAY]")
+        #    print("use vulndork.py --help for more info")
+        #
 
     else:
         print("[-] Google Hacking Database not found. Run $ python3 scraper.py to retrieve the dorks")
