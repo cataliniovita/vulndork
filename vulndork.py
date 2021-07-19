@@ -1,7 +1,6 @@
 import os
 import time
 import sys
-import numpy
 import argparse
 import requests
 import googlesearch 
@@ -94,6 +93,9 @@ def tor_session_cfg():
     session.proxies = {'http': 'socks5://127.0.0.1:9050',
                        'https': 'socks5://127.0.0.1:9050'}
 
+    ip_response = session.get("http://httpbin.org/ip")
+    print("[+] Your renewed IP address is {0}".format(ip_response.json()['origin']))
+
     return session
 
 # Scrape the google search
@@ -136,7 +138,10 @@ def parse_dorks(args, dfile, multiple_str):
     # Also send a request to google
     while True:
         current_dork = dfile.readline()
+        dorks_results = []
             
+        session = tor_session_cfg()
+
         if args.urlsfile:
             add_site = multiple_str + " " + current_dork
             add_site = add_site.strip('\n')
@@ -148,10 +153,11 @@ def parse_dorks(args, dfile, multiple_str):
             print("[-] No url or multiple urls found")
             return
  
-        dorks_results = googlesearch.search(
+        dorks_results += googlesearch.search(
                 add_site,
                 start=0,
-                num=4,
+                stop=2,
+                num=2,
                 pause=int(delay),
                 user_agent=user_agent)
 
@@ -161,8 +167,14 @@ def parse_dorks(args, dfile, multiple_str):
             print("[+] All dorks parsed")
             break
 
-        for result in dorks_results:
-            print(result)
+        if dorks_results:
+            for result in dorks_results:
+                print(result)
+        # Sleep 1 second if we don't find any results (need for renew_ip delay)
+        else:
+            time.sleep(1)
+
+        renew_ip()
 
     return dorks_results
 
@@ -200,42 +212,34 @@ def renew_ip():
     with Controller.from_port(port = 9051) as controller:
         controller.authenticate(password='cymedtor')
         controller.signal(Signal.NEWNYM)
-        print("[-] Your ip has been renewed")
+        print("[!] Your IP address is being renewed...")
 
 if __name__ == "__main__":
     if db_exists() == True:
         dorks_file = open("ghdb.dorks", "r")
 
-        ## Create parser for arguments
-        #parser = argparse.ArgumentParser(
-        #        description='Vulndork v0.1 - web-site vulnerability scanner based on Google Dorks',
-        #        epilog="Vulndork is a web-site vulnerability scanner which uses the Google Hacking Database, available on exploit-db")
+        # Create parser for arguments
+        parser = argparse.ArgumentParser(
+                description='Vulndork v0.1 - web-site vulnerability scanner based on Google Dorks',
+                epilog="Vulndork is a web-site vulnerability scanner which uses the Google Hacking Database, available on exploit-db")
 
-        ## Add parameters to the parser
-        #add_params(parser)
-        #args = parser.parse_args()
+        # Add parameters to the parser
+        add_params(parser)
+        args = parser.parse_args()
 
-        #if len(sys.argv) > 1:
-        #    multiple_cstr = ""
-        #    # Check for multiple clients scan
-        #    if args.urlsfile:
-        #        multiple_cstr = multiple_clients(args)
-        #    # Parse dorks from dorks file
-        #    dorks_results = parse_dorks(args, dorks_file, multiple_cstr)
-        #    # Save output into a file, in case of '-o' option was selected
-        #    save_output(args, dorks_results)
-        #else:
-        #    print("usage: vulndork.py [-h] [-u URL] [-m URLSFILE] [-o OUTPUTFILE] [-d DELAY]")
-        #    print("use vulndork.py --help for more info")
-        #
-        #google_search("yup")
-
-        for i in range(4):
-            session = tor_session_cfg()
-            print(session.get("http://httpbin.org/ip").text)
-            print(requests.get("http://httpbin.org/ip").text)
-            time.sleep(5)
-            renew_ip()
+        if len(sys.argv) > 1:
+            multiple_cstr = ""
+            # Check for multiple clients scan
+            if args.urlsfile:
+                multiple_cstr = multiple_clients(args)
+            # Parse dorks from dorks file
+            dorks_results = parse_dorks(args, dorks_file, multiple_cstr)
+            # Save output into a file, in case of '-o' option was selected
+            save_output(args, dorks_results)
+        else:
+            print("usage: vulndork.py [-h] [-u URL] [-m URLSFILE] [-o OUTPUTFILE] [-d DELAY]")
+            print("use vulndork.py --help for more info")
+        
 
     else:
         print("[-] Google Hacking Database not found. Run $ python3 scraper.py to retrieve the dorks")

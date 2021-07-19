@@ -1,0 +1,5 @@
+html_to_json==2.0.0
+requests==2.22.0
+google==3.0.0
+stem==1.8.0
+beautifulsoup4==4.9.3
