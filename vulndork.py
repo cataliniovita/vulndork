@@ -112,7 +112,7 @@ def tor_session_cfg():
 
 # Scrape the google search
 def google_search(query):
-    base_query = "https://google.com/search?q="
+    base_query = "https://www.google.com/search?q=intitle:cymed.ro"
     print("Yes")
 
     headers = {
@@ -124,10 +124,9 @@ def google_search(query):
         "Accept-Language": "en-US,en;q=0.9",
     }
 
-    base_query = base_query + "a"
     print(base_query)
     session = tor_session_cfg()
-    req_gs = session.get(base_query)
+    req_gs = session.get(base_query, headers=headers, verify=True)
 
     print(req_gs.status_code)
 
