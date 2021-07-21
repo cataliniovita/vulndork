@@ -9,6 +9,7 @@ from stem import Signal
 from stem.control import Controller
 from random_user_agent.user_agent import UserAgent
 from random_user_agent.params import SoftwareName, OperatingSystem
+from PyQt5 import QtWidgets, uic
 
 def info_usage():
     print("Usage: python3 vulndork") 
@@ -109,34 +110,6 @@ def tor_session_cfg():
     print("[+] Your renewed IP address is {0}".format(ip_response.json()['origin']))
 
     return session
-
-# Scrape the google search
-def google_search(query):
-    base_query = "https://www.google.com/search?q=intitle:cymed.ro"
-    print("Yes")
-
-    headers = {
-        "Host": "google.com",
-        "Connection": "close",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-        "Accept-Encoding": "gzip, deflate",
-        "Accept-Language": "en-US,en;q=0.9",
-    }
-
-    print(base_query)
-    session = tor_session_cfg()
-    req_gs = session.get(base_query, headers=headers, verify=True)
-
-    print(req_gs.status_code)
-
-    if req_gs.status_code != 200:
-        error_gs()
-        return
-
-    json_gs = req_gs.json()
-
-    print(json_gs)
 
 def parse_dorks(args, dfile, multiple_str):
     dorks_results = []
@@ -254,8 +227,6 @@ if __name__ == "__main__":
         ## Add parameters to the parser
         #add_params(parser)
         #args = parser.parse_args()
-
-        google_search("a")
 
         #if len(sys.argv) > 1:
         #    multiple_cstr = ""
