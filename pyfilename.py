@@ -8,12 +8,12 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtGui import QIcon, QPixmap
 
 class Ui_mainframe(object):
     def setupUi(self, mainframe):
         mainframe.setObjectName("mainframe")
-        mainframe.resize(472, 690)
+        mainframe.resize(473, 690)
         font = QtGui.QFont()
         font.setFamily("Ubuntu Condensed")
         font.setBold(False)
@@ -21,6 +21,9 @@ class Ui_mainframe(object):
         font.setWeight(50)
         mainframe.setFont(font)
         mainframe.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("../Downloads/Webp.net-resizeimage(1).png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        mainframe.setWindowIcon(icon)
         mainframe.setStyleSheet("alternate-background-color: rgb(164, 0, 0);\n"
 "border-color: rgb(164, 0, 0);")
         self.line = QtWidgets.QFrame(mainframe)
@@ -51,21 +54,22 @@ class Ui_mainframe(object):
         self.browse1 = QtWidgets.QToolButton(self.dns_file)
         self.browse1.setGeometry(QtCore.QRect(395, 21, 41, 20))
         self.browse1.setObjectName("browse1")
-        self.browse1.clicked.connect(self.browsefiles)
         self.label_3 = QtWidgets.QLabel(mainframe)
         self.label_3.setGeometry(QtCore.QRect(17, 15, 161, 31))
         self.label_3.setObjectName("label_3")
         self.pushButton = QtWidgets.QPushButton(mainframe)
-        self.pushButton.setGeometry(QtCore.QRect(98, 533, 261, 25))
+        self.pushButton.setGeometry(QtCore.QRect(101, 550, 261, 25))
         self.pushButton.setObjectName("pushButton")
         self.label_4 = QtWidgets.QLabel(mainframe)
         self.label_4.setGeometry(QtCore.QRect(0, 0, 481, 71))
-        self.label_4.setStyleSheet("background-color: rgb(164, 0, 0);")
+        self.label_4.setStyleSheet("background-color: rgb(164, 0, 0);\n"
+"background-color: qlineargradient(spread:pad, x1:0.636876, y1:0.596591, x2:1, y2:1, stop:0 rgba(119, 0, 0, 255), stop:1 rgba(255, 255, 255, 255));")
         self.label_4.setText("")
         self.label_4.setObjectName("label_4")
         self.label_5 = QtWidgets.QLabel(mainframe)
         self.label_5.setGeometry(QtCore.QRect(0, 620, 481, 71))
-        self.label_5.setStyleSheet("background-color: rgb(164, 0, 0);")
+        self.label_5.setStyleSheet("background-color: rgb(164, 0, 0);\n"
+"background-color: rgb(119, 0, 0);")
         self.label_5.setText("")
         self.label_5.setObjectName("label_5")
         self.label_6 = QtWidgets.QLabel(mainframe)
@@ -103,7 +107,7 @@ class Ui_mainframe(object):
         self.browse2.setGeometry(QtCore.QRect(395, 20, 41, 20))
         self.browse2.setObjectName("browse2")
         self.progressBar = QtWidgets.QProgressBar(mainframe)
-        self.progressBar.setGeometry(QtCore.QRect(42, 579, 391, 21))
+        self.progressBar.setGeometry(QtCore.QRect(40, 520, 391, 21))
         font = QtGui.QFont()
         font.setFamily("Umpush")
         font.setPointSize(10)
@@ -114,6 +118,21 @@ class Ui_mainframe(object):
         self.progressBar.setMinimum(0)
         self.progressBar.setProperty("value", 9)
         self.progressBar.setObjectName("progressBar")
+        self.pushButton_2 = QtWidgets.QPushButton(mainframe)
+        self.pushButton_2.setGeometry(QtCore.QRect(185, 580, 91, 25))
+        self.pushButton_2.setObjectName("pushButton_2")
+        self.line_3 = QtWidgets.QFrame(mainframe)
+        self.line_3.setGeometry(QtCore.QRect(-6, 81, 20, 531))
+        self.line_3.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line_3.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_3.setObjectName("line_3")
+        pixmap = QPixmap('cymed.png')
+        self.label_3.setPixmap(pixmap)
+        self.line_4 = QtWidgets.QFrame(mainframe)
+        self.line_4.setGeometry(QtCore.QRect(460, 77, 20, 531))
+        self.line_4.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line_4.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_4.setObjectName("line_4")
         self.label_5.raise_()
         self.label_4.raise_()
         self.dns_file.raise_()
@@ -127,26 +146,24 @@ class Ui_mainframe(object):
         self.label_8.raise_()
         self.dorks_path.raise_()
         self.progressBar.raise_()
+        self.pushButton_2.raise_()
+        self.line_3.raise_()
+        self.line_4.raise_()
 
         self.retranslateUi(mainframe)
         QtCore.QMetaObject.connectSlotsByName(mainframe)
-
-    def browsefiles(self):
-        fname = QFileDialog.getOpenFileName(self.QtWidgets, 'Open file', '/home/cymed/Desktop/my_vulndork/vulndork')
-        self.filename.setText(fname[0])
 
     def retranslateUi(self, mainframe):
         _translate = QtCore.QCoreApplication.translate
         mainframe.setWindowTitle(_translate("mainframe", "vulndork"))
         self.label.setText(_translate("mainframe", "Enter hospitals DNS file:"))
         self.browse1.setText(_translate("mainframe", "..."))
-        self.label_3.setText(_translate("mainframe", "<html><head/><body><p><img src=\":/newPrefix/Webp.net-resizeimage(1).png\"/></p></body></html>"))
         self.pushButton.setText(_translate("mainframe", "Start the scan"))
         self.label_6.setText(_translate("mainframe", "<html><head/><body><p align=\"center\"><span style=\" font-size:10pt; font-style:italic; color:#ffffff;\">Copyright © CYMED 2021</span></p></body></html>"))
         self.label_8.setText(_translate("mainframe", "<html><head/><body><p><span style=\" font-size:12pt; color:#ffffff;\">Passive vulnerability scanner</span></p></body></html>"))
         self.label_9.setText(_translate("mainframe", "Select dorks file path:"))
         self.browse2.setText(_translate("mainframe", "..."))
-
+        self.pushButton_2.setText(_translate("mainframe", "Quit"))
 
 if __name__ == "__main__":
     import sys
