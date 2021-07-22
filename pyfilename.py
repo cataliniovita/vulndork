@@ -9,6 +9,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtWidgets import QFileDialog
 
 class Ui_mainframe(object):
     def setupUi(self, mainframe):
@@ -22,7 +23,7 @@ class Ui_mainframe(object):
         mainframe.setFont(font)
         mainframe.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../Downloads/Webp.net-resizeimage(1).png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("~/Downloads/Webp.net-resizeimage(1).png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         mainframe.setWindowIcon(icon)
         mainframe.setStyleSheet("alternate-background-color: rgb(164, 0, 0);\n"
 "border-color: rgb(164, 0, 0);")
@@ -152,6 +153,26 @@ class Ui_mainframe(object):
 
         self.retranslateUi(mainframe)
         QtCore.QMetaObject.connectSlotsByName(mainframe)
+        
+        # Close window by quit button
+        self.pushButton_2.clicked.connect(self.closewin)
+        
+        # Browse directories
+        self.browse1.clicked.connect(self.browse_file_dns)
+        self.browse2.clicked.connect(self.browse_file_dork)
+
+        # Set directory text field
+
+    def browse_file_dork(self):
+        file = str(QFileDialog.getOpenFileName(None, "Select dork file", '.'))
+        self.lineEdit_2.setText(file)
+
+    def browse_file_dns(self):
+        file = str(QFileDialog.getOpenFileName(None, "Select hospitals DNS file", '.'))
+        self.lineEdit.setText(file)
+
+    def closewin(self):
+        QtCore.QCoreApplication.instance().quit()
 
     def retranslateUi(self, mainframe):
         _translate = QtCore.QCoreApplication.translate
