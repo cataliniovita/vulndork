@@ -161,15 +161,19 @@ class Ui_mainframe(object):
         self.browse1.clicked.connect(self.browse_file_dns)
         self.browse2.clicked.connect(self.browse_file_dork)
 
-        # Set directory text field
-
     def browse_file_dork(self):
-        file = str(QFileDialog.getOpenFileName(None, "Select dork file", '.'))
-        self.lineEdit_2.setText(file)
+        file_name = str(QFileDialog.getOpenFileName(None, "Select dork file", '.'))
+        file_name = file_name.replace("'All Files (*)')", '')
+        file_name = file_name.replace("('", '')
+        file_name = file_name.replace(", ", '')
+        self.lineEdit_2.setText(file_name.rstrip('(\''))
 
     def browse_file_dns(self):
-        file = str(QFileDialog.getOpenFileName(None, "Select hospitals DNS file", '.'))
-        self.lineEdit.setText(file)
+        file_name = str(QFileDialog.getOpenFileName(None, "Select hospitals DNS file", '.'))
+        file_name = file_name.replace("'All Files (*)')", '')
+        file_name = file_name.replace("('", '')
+        file_name = file_name.replace(", ", '')
+        self.lineEdit.setText(file_name.rstrip('(\''))
 
     def closewin(self):
         QtCore.QCoreApplication.instance().quit()
