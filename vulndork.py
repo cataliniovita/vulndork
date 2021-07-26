@@ -4,6 +4,8 @@ import sys
 import argparse
 import requests
 import googlesearch 
+from random import randint
+from time import sleep
 from pathlib import Path
 from stem import Signal
 from stem.control import Controller
@@ -138,7 +140,7 @@ def parse_dorks(args, dfile, multiple_str):
                 
         test_flag += 1
         # Rotate user agent
-        user_agent = user_agent_rotator.get_random_user_agent()
+        user_agent = "Googlebot/2.1 (+http://www.google.com/bot.html)"
         print("[+] Your User Agent is: " + user_agent)
 
         if args.urlsfile:
@@ -160,6 +162,11 @@ def parse_dorks(args, dfile, multiple_str):
                 num=2,
                 pause=int(delay),
                 user_agent=user_agent)
+
+        # Random delay to avoid get banned
+        rand_time = randint(10, 100)
+        print("[!] You are going to sleep " + str(rand_time) + " seconds")
+        sleep(rand_time)
 
         if not current_dork:
             # TODO Raport the results
@@ -220,27 +227,27 @@ if __name__ == "__main__":
         dorks_file = open("ghdb.dorks", "r")
 
         # Create parser for arguments
-        #parser = argparse.ArgumentParser(
-        #        description='Vulndork v0.1 - web-site vulnerability scanner based on Google Dorks',
-        #        epilog="Vulndork is a web-site vulnerability scanner which uses the Google Hacking Database, available on exploit-db")
+        parser = argparse.ArgumentParser(
+                description='Vulndork v0.1 - web-site vulnerability scanner based on Google Dorks',
+                epilog="Vulndork is a web-site vulnerability scanner which uses the Google Hacking Database, available on exploit-db")
 
-        ## Add parameters to the parser
-        #add_params(parser)
-        #args = parser.parse_args()
+        # Add parameters to the parser
+        add_params(parser)
+        args = parser.parse_args()
 
-        #if len(sys.argv) > 1:
-        #    multiple_cstr = ""
-        #    # Check for multiple clients scan
-        #    if args.urlsfile:
-        #        multiple_cstr = multiple_clients(args)
-        #    # Parse dorks from dorks file
-        #    dorks_results = parse_dorks(args, dorks_file, multiple_cstr)
-        #    # Save output into a file, in case of '-o' option was selected
-        #    save_output(args, dorks_results)
-        #else:
-        #    print("usage: vulndork.py [-h] [-u URL] [-m URLSFILE] [-o OUTPUTFILE] [-d DELAY]")
-        #    print("use vulndork.py --help for more info")
-        #
+        if len(sys.argv) > 1:
+            multiple_cstr = ""
+            # Check for multiple clients scan
+            if args.urlsfile:
+                multiple_cstr = multiple_clients(args)
+            # Parse dorks from dorks file
+            dorks_results = parse_dorks(args, dorks_file, multiple_cstr)
+            # Save output into a file, in case of '-o' option was selected
+            save_output(args, dorks_results)
+        else:
+            print("usage: vulndork.py [-h] [-u URL] [-m URLSFILE] [-o OUTPUTFILE] [-d DELAY]")
+            print("use vulndork.py --help for more info")
+        
 
     else:
         print("[-] Google Hacking Database not found. Run $ python3 scraper.py to retrieve the dorks")
