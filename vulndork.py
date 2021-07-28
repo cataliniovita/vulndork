@@ -132,6 +132,8 @@ def parse_dorks(args, dfile, multiple_str):
         current_dork = dfile.readline()
         dorks_results = []
             
+        print("[*] Current dork is: " + current_dork)
+
         # Create a new tor session
         session = tor_session_cfg()
 
@@ -155,16 +157,47 @@ def parse_dorks(args, dfile, multiple_str):
             return
  
         # Make the proper google search
-        dorks_results += googlesearch.search(
-                add_site,
-                start=0,
-                stop=2,
-                num=2,
-                pause=int(delay),
-                user_agent=user_agent)
+#        dorks_results +=jgooglesearch.search(
+#                add_site,
+#                start=0,
+#                stop=2,
+#                num=2,
+#                pause=int(delay),
+#                user_agent=user_agent)
+#
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:90.0) Gecko/20100101 Firefox/90.0',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Referer': 'https://www.google.com/',
+            'Alt-Used': 'www.google.com',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'same-origin',
+            'Sec-Fetch-User': '?1',
+            'Cache-Control': 'max-age=0',
+            'TE': 'trailers',
+        }
 
+        params = (
+            ('q', current_dork),
+            ('client', 'ubuntu'),
+            ('hs', 'RrN'),
+            ('channel', 'fs'),
+            ('ei', 'jhMBYfaeIavkgwegxKX4CA'),
+            ('oq', 'intitle:cymed'),
+            ('gs_lcp', 'Cgdnd3Mtd2l6EAM6BwgAEEcQsAM6CAguEJECEJMCOgUILhCRAjoICC4QxwEQowI6AggAOgIILjoFCAAQkQI6BAgAEEM6CAguEMcBEK8BOggILhDHARDRAzoECAAQCkoECEEYAFCp2gFYtu0BYNPuAWgCcAV4AIABlgGIAcYLkgEEMTAuNZgBAaABAaoBB2d3cy13aXrIAQLAAQE'),
+            ('sclient', 'gws-wiz'),
+            ('ved', '0ahUKEwj2naflqoXyAhUr8uAKHSBiCY8Q4dUDCA4'),
+            ('uact', '5'),
+        )
+
+        dorks_results = requests.get('https://www.google.com/search', headers=headers)
+        print(dorks_results.status_code)
         # Random delay to avoid get banned
-        rand_time = randint(10, 100)
+        rand_time = randint(5, 9)
         print("[!] You are going to sleep " + str(rand_time) + " seconds")
         sleep(rand_time)
 
