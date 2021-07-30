@@ -4,7 +4,10 @@ import sys
 import argparse
 import requests
 import googlesearch 
+
+import tor_google_search
 from random import randint
+from googlesearch import search
 from time import sleep
 from pathlib import Path
 from stem import Signal
@@ -157,10 +160,10 @@ def parse_dorks(args, dfile, multiple_str):
             return
  
         # Make the proper google search
-#        dorks_results +=jgooglesearch.search(
+#        dorks_results += googlesearch.search(
 #                add_site,
 #                start=0,
-#                stop=2,
+#               stop=2,
 #                num=2,
 #                pause=int(delay),
 #                user_agent=user_agent)
@@ -194,8 +197,9 @@ def parse_dorks(args, dfile, multiple_str):
             ('uact', '5'),
         )
 
-        dorks_results = requests.get('https://www.google.com/search', headers=headers)
-        print(dorks_results.status_code)
+        dorks_results = search(add_site)
+        print("Num is " + str(test_flag))
+
         # Random delay to avoid get banned
         rand_time = randint(5, 9)
         print("[!] You are going to sleep " + str(rand_time) + " seconds")
@@ -281,6 +285,7 @@ if __name__ == "__main__":
             print("usage: vulndork.py [-h] [-u URL] [-m URLSFILE] [-o OUTPUTFILE] [-d DELAY]")
             print("use vulndork.py --help for more info")
         
+       # tor_google_search.search("yea")
 
     else:
         print("[-] Google Hacking Database not found. Run $ python3 scraper.py to retrieve the dorks")
