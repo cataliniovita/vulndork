@@ -46,7 +46,7 @@ def user_agent_rotate():
     software_names = [SoftwareName.CHROME.value]
     operating_systems = [OperatingSystem.WINDOWS.value, OperatingSystem.LINUX.value]
 
-    user_agent_rot = UserAgent(software_names=software_names, operating_systems=operating_systems, limit=100)
+    user_agent_rot = UserAgent(software_names=software_names, operating_systems=operating_systems, limit=1555)
 
     # Return user_agent_rotator
     return user_agent_rot
@@ -109,13 +109,11 @@ def language_code():
         code = current_lang[current_lang.find('\'') + len('\''):current_lang.rfind(':')]
         code = code.rstrip('\'')
 
-        lang_list += code 
+        lang_list.append(code)
 
         if not current_lang:
             print("[*] Language codes gist cloned")
-            return
-
-    return lang_list
+            return lang_list
 
 # Save output to a file (-o option from params)
 def save_output(args, dorks_results):
@@ -149,7 +147,12 @@ def parse_dorks(args, dfile, multiple_str):
     else:
         delay = 35
 
-    test_flag = 0
+    current_num = 1
+    d_len = dorks_len(dfile)
+    dfile = open("ghdb.dorks", "r")
+
+    # Generate language codes list
+    language_list = language_code()
 
     # Parse the file which contains the dorks and add the "site:" query into every line
     # Also send a request to google
@@ -157,15 +160,13 @@ def parse_dorks(args, dfile, multiple_str):
         current_dork = dfile.readline()
         dorks_results = []
             
-        print("[*] Current dork is: " + current_dork)
+        print("[*] Current dork is: " + current_dork.strip("\n") + " (" + str(current_num) + "/" + str(d_len) + ")")
 
         # Create a new tor session
         session = tor_session_cfg()
-
-        if test_flag == 0:
-            renew_ip()
+        renew_ip()
                 
-        test_flag += 1
+        current_num += 1
 
         # Rotate user agent
         user_agent_rotator = user_agent_rotate()
@@ -189,48 +190,16 @@ def parse_dorks(args, dfile, multiple_str):
         delay += rand_time
 
         # Randomize language code
-        language_list = language_code()
-        print(len(language_list))
+        code = language_list[randint(0, len(language_list) - 2)]
 
         # Make the proper google search
-#        dorks_results += googlesearch.search(
-#                add_site,
-#                lang='pl',
-#                stop=2,
-#                num=2,
-#                pause=int(delay),
-#                user_agent=user_agent)
-#
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:90.0) Gecko/20100101 Firefox/90.0',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.5',
-            'Referer': 'https://www.google.com/',
-            'Alt-Used': 'www.google.com',
-            'Connection': 'keep-alive',
-            'Upgrade-Insecure-Requests': '1',
-            'Sec-Fetch-Dest': 'document',
-            'Sec-Fetch-Mode': 'navigate',
-            'Sec-Fetch-Site': 'same-origin',
-            'Sec-Fetch-User': '?1',
-            'Cache-Control': 'max-age=0',
-            'TE': 'trailers',
-        }
-
-        params = (
-            ('q', current_dork),
-            ('client', 'ubuntu'),
-            ('hs', 'RrN'),
-            ('channel', 'fs'),
-            ('ei', 'jhMBYfaeIavkgwegxKX4CA'),
-            ('oq', 'intitle:cymed'),
-            ('gs_lcp', 'Cgdnd3Mtd2l6EAM6BwgAEEcQsAM6CAguEJECEJMCOgUILhCRAjoICC4QxwEQowI6AggAOgIILjoFCAAQkQI6BAgAEEM6CAguEMcBEK8BOggILhDHARDRAzoECAAQCkoECEEYAFCp2gFYtu0BYNPuAWgCcAV4AIABlgGIAcYLkgEEMTAuNZgBAaABAaoBB2d3cy13aXrIAQLAAQE'),
-            ('sclient', 'gws-wiz'),
-            ('ved', '0ahUKEwj2naflqoXyAhUr8uAKHSBiCY8Q4dUDCA4'),
-            ('uact', '5'),
-        )
-
-        print("Num is " + str(test_flag))
+        dorks_results += googlesearch.search(
+                add_site,
+                lang=code,
+                stop=2,
+                num=2,
+                pause=int(delay),
+                user_agent=user_agent)
 
         if not current_dork:
             # TODO Raport the results
@@ -283,6 +252,16 @@ def renew_ip():
         controller.signal(Signal.NEWNYM)
         print("[!] Your IP address is being renewed...")
 
+def dorks_len(dfile):
+    d_file = open("ghdb.dorks", "r")
+
+    dork_len = 0
+
+    while dfile.readline():
+        dork_len += 1
+        
+    return dork_len
+
 if __name__ == "__main__":
     if db_exists() == True:
         dorks_file = open("ghdb.dorks", "r")
@@ -304,7 +283,7 @@ if __name__ == "__main__":
             # Parse dorks from dorks file
             dorks_results = parse_dorks(args, dorks_file, multiple_cstr)
             # Save output into a file, in case of '-o' option was selected
-#            save_output(args, dorks_results)
+            save_output(args, dorks_results)
         else:
             print("usage: vulndork.py [-h] [-u URL] [-m URLSFILE] [-o OUTPUTFILE] [-d DELAY]")
             print("use vulndork.py --help for more info")
