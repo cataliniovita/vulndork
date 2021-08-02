@@ -1,10 +1,11 @@
 import os
+import re
+import git
 import time
 import sys
 import argparse
 import requests
 import googlesearch 
-
 import tor_google_search
 from random import randint
 from googlesearch import search
@@ -93,6 +94,29 @@ def add_params(parser):
             required=False,
             help="set delay time between requests (1s by default)")
 
+# Clone the language code repo
+def language_code():
+    try:
+        lang_file = open("8b60240ca6daaedd5a9f20f34617b4a7/google-language-codes", "r")
+    except FileNotFoundError:
+        git.Git(".").clone("https://gist.github.com/cataiovita/8b60240ca6daaedd5a9f20f34617b4a7")
+        lang_file = open("8b60240ca6daaedd5a9f20f34617b4a7/google-language-codes", "r")
+
+    lang_list = []
+
+    while True:
+        current_lang = lang_file.readline()
+        code = current_lang[current_lang.find('\'') + len('\''):current_lang.rfind(':')]
+        code = code.rstrip('\'')
+
+        lang_list += code 
+
+        if not current_lang:
+            print("[*] Language codes gist cloned")
+            return
+
+    return lang_list
+
 # Save output to a file (-o option from params)
 def save_output(args, dorks_results):
     if args.outputfile:
@@ -121,11 +145,9 @@ def parse_dorks(args, dfile, multiple_str):
     # Set delay for requests
     if args.delay:
         delay = int(args.delay)
+    # Default delay - 35 s
     else:
-        delay  = 1
-
-    user_agent_rotator = user_agent_rotate()
-    user_agent = user_agent_rotator.get_random_user_agent()
+        delay = 35
 
     test_flag = 0
 
@@ -144,8 +166,10 @@ def parse_dorks(args, dfile, multiple_str):
             renew_ip()
                 
         test_flag += 1
+
         # Rotate user agent
-        user_agent = "Googlebot/2.1 (+http://www.google.com/bot.html)"
+        user_agent_rotator = user_agent_rotate()
+        user_agent = user_agent_rotator.get_random_user_agent()
         print("[+] Your User Agent is: " + user_agent)
 
         if args.urlsfile:
@@ -159,11 +183,20 @@ def parse_dorks(args, dfile, multiple_str):
             print("[-] No url or multiple urls found")
             return
  
+        # Randomize a jitter
+        rand_time = randint(1, 9)
+        print("[!] Random delay is " + str(rand_time) + " seconds")
+        delay += rand_time
+
+        # Randomize language code
+        language_list = language_code()
+        print(len(language_list))
+
         # Make the proper google search
 #        dorks_results += googlesearch.search(
 #                add_site,
-#                start=0,
-#               stop=2,
+#                lang='pl',
+#                stop=2,
 #                num=2,
 #                pause=int(delay),
 #                user_agent=user_agent)
@@ -197,13 +230,7 @@ def parse_dorks(args, dfile, multiple_str):
             ('uact', '5'),
         )
 
-        dorks_results = search(add_site)
         print("Num is " + str(test_flag))
-
-        # Random delay to avoid get banned
-        rand_time = randint(5, 9)
-        print("[!] You are going to sleep " + str(rand_time) + " seconds")
-        sleep(rand_time)
 
         if not current_dork:
             # TODO Raport the results
@@ -217,9 +244,6 @@ def parse_dorks(args, dfile, multiple_str):
         # Sleep 1 second if we don't find any results (need for renew_ip delay)
         else:
             time.sleep(2)
-
-        # Renew our IP address for the next tor session
-        renew_ip()
 
     return dorks_results
 
@@ -280,7 +304,7 @@ if __name__ == "__main__":
             # Parse dorks from dorks file
             dorks_results = parse_dorks(args, dorks_file, multiple_cstr)
             # Save output into a file, in case of '-o' option was selected
-            save_output(args, dorks_results)
+#            save_output(args, dorks_results)
         else:
             print("usage: vulndork.py [-h] [-u URL] [-m URLSFILE] [-o OUTPUTFILE] [-d DELAY]")
             print("use vulndork.py --help for more info")
