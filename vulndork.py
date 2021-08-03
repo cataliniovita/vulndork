@@ -17,6 +17,14 @@ from random_user_agent.user_agent import UserAgent
 from random_user_agent.params import SoftwareName, OperatingSystem
 from PyQt5 import QtWidgets, uic
 
+def banner():
+    print(
+"""    __     __        ___           __            __
+    \_\   /_/__  __ /  /______ ___/ /___   ____ / /__
+     \ \_/ // /_/ //__// __  // _  // _ \ / __//_ '_/
+      \___//_____//__//_/ /_/ \_,_/ \___//_/  /_/\_\_
+            """)
+
 def info_usage():
     print("Usage: python3 vulndork") 
 
@@ -53,19 +61,19 @@ def user_agent_rotate():
 
 # Check if an update is needed
 def update_check():
+    # Print vulndorks's banner
+    banner()
     time_chk = get_file_timestamp()
 
     # Time limit set to 1 day
-    if time_chk > 1:
+    if time_chk > 100:
         print("[!] Your local Google Hacking Database may be outdated. You can try to update it by running $ python3 scraper.py")
     # Convert to hours and print an update message
     else:
         hour_time = time_chk * 24
-        if hour_time < 1:
+        if hour_time < 0:
             hour_time = hour_time + 1
             print("[!] Your local Google Hacking Database was updated", int(hour_time), "hour ago") 
-        else:
-            print("[!] Your local Google Hacking Database was updated", int(hour_time), "hours ago") 
 
 # Add parameters to our program
 def add_params(parser):
@@ -143,9 +151,9 @@ def parse_dorks(args, dfile, multiple_str):
     # Set delay for requests
     if args.delay:
         delay = int(args.delay)
-    # Default delay - 35 s
+    # Default delay - 40 s
     else:
-        delay = 35
+        delay = 40
 
     current_num = 1
     d_len = dorks_len(dfile)
@@ -288,7 +296,6 @@ if __name__ == "__main__":
             print("usage: vulndork.py [-h] [-u URL] [-m URLSFILE] [-o OUTPUTFILE] [-d DELAY]")
             print("use vulndork.py --help for more info")
         
-       # tor_google_search.search("yea")
 
     else:
         print("[-] Google Hacking Database not found. Run $ python3 scraper.py to retrieve the dorks")
