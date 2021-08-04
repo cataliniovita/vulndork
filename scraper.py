@@ -11,6 +11,26 @@ def error_db():
 def gather_done():
     print("[+] Local GHD succesfully updated")
 
+def category_list():
+    category = {
+        "/dorks/web_server_detection.dorks": "Web Server Detection",
+        "/dorks/footholds.dorks": "Footholds",
+        "/dorks/sensitive_directories.dorks": "Sensitives Directories",
+        "/dorks/vulnerable_files.dorks": "Vulnerable Files",
+        "/dorks/network_or_vulnerability_data.dorks": "Network or Vulnerability Data",
+        "/dorks/file_containing_password.dorks": "File Containing Passwords",
+        "/dorks/file_containing_usernames.dorks": "File Containing Usernames",
+        "/dorks/file_containing_juicy_info.dorks": "File Containing Juicy Info",
+        "/dorks/advisories_and_vulnerabilities.dorks": "Advisories and Vulnerabilities",
+        "/dorks/vulnerable_servers.dorks": "Vulnerable Servers",
+        "/dorks/error_messages.dorks": "Error Messages",
+        "/dorks/pages_containing_login_portals.dorks": "Pages Containing Login Portals",
+        "/dorks/various_online_devices.dorks": "Various Online devices",
+        "/dorks/sensitive_online_shopping_info.dorks": "Sensitive Online Shopping Info",
+    }
+
+    return category
+
 # First, retrieve all dorks from exploit-db
 def get_dorks():
     database_url = "https://www.exploit-db.com/google-hacking-database"
@@ -41,12 +61,17 @@ def get_dorks():
 
     # 1. Filter by data json type
     page_data = json_page["data"]
+    
+    for category in page_data:
+        page_cat = category["category"]
+        print(page_cat["cat_title"])
 
     # 2. Filter by url_title type  
     for url in range(len(page_data)):
-        iter_soup = BeautifulSoup(page_data[url]["url_title"], "html.parser") 
+        # Take the title
+        title_soup = BeautifulSoup(page_data[url]["url_title"], "html.parser") 
         # Filter the exact dorks we need
-        dork = iter_soup.find("a").contents[0]
+        dork = title_soup.find("a").contents[0]
         dorks_file.write(dork)
         dorks_file.write("\n")
         

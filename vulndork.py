@@ -19,10 +19,11 @@ from PyQt5 import QtWidgets, uic
 
 def banner():
     print(
-"""    __     __        ___           __            __
-    \_\   /_/__  __ /  /______ ___/ /___   ____ / /__
-     \ \_/ // /_/ //__// __  // _  // _ \ / __//_ '_/
-      \___//_____//__//_/ /_/ \_,_/ \___//_/  /_/\_\_
+"""__     __        ___           __            __
+\_\   /_/__  __ /  /______ ___/ /___   ____ / /__
+ \ \_/ // /_/ //__// __  // _  // _ \ / __//_ '_/
+  \___//_____//__//_/ /_/ \_,_/ \___//_/  /_/\_\  
+                                                  v0.1 
             """)
 
 def info_usage():
@@ -100,7 +101,7 @@ def add_params(parser):
             dest="delay",
             action="store",
             required=False,
-            help="set delay time between requests (1s by default)")
+            help="set delay time between requests (40s by default)")
 
 # Clone the language code repo
 def language_code():
