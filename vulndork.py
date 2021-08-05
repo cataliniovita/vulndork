@@ -6,7 +6,6 @@ import sys
 import argparse
 import requests
 import googlesearch 
-import tor_google_search
 from random import randint
 from googlesearch import search
 from time import sleep
