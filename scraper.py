@@ -10,7 +10,7 @@ def error_db():
     print("[-] Error! Couldn't get the Google Hacking Database") 
 
 def gather_done():
-    print("[+] Local GHD succesfully updated")
+    print("[+] Local GHDB succesfully updated")
 
 def category_list():
     category = {
@@ -94,13 +94,12 @@ def get_dorks():
         # Use with block (close automatically)
         cat_name = cat_list.get(page_data[url]["category"]["cat_title"])
 
-        with open(cat_name, "a") as cat_file:
+        with open(cat_name, "w") as cat_file:
             cat_file.write(dork)
             cat_file.write("\n")
 
         dorks_file.write(dork)
         dorks_file.write("\n")
-
         
         # Write to each separate file in /dorks dir
         
