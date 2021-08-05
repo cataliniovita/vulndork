@@ -2,6 +2,7 @@ import requests
 import json
 import html_to_json
 import os.path, time
+from pathlib import Path
 from bs4 import BeautifulSoup
 from datetime import datetime
 
@@ -13,22 +14,28 @@ def gather_done():
 
 def category_list():
     category = {
-        "/dorks/web_server_detection.dorks": "Web Server Detection",
-        "/dorks/footholds.dorks": "Footholds",
-        "/dorks/sensitive_directories.dorks": "Sensitives Directories",
-        "/dorks/vulnerable_files.dorks": "Vulnerable Files",
-        "/dorks/network_or_vulnerability_data.dorks": "Network or Vulnerability Data",
-        "/dorks/file_containing_password.dorks": "File Containing Passwords",
-        "/dorks/file_containing_usernames.dorks": "File Containing Usernames",
-        "/dorks/file_containing_juicy_info.dorks": "File Containing Juicy Info",
-        "/dorks/advisories_and_vulnerabilities.dorks": "Advisories and Vulnerabilities",
-        "/dorks/vulnerable_servers.dorks": "Vulnerable Servers",
-        "/dorks/error_messages.dorks": "Error Messages",
-        "/dorks/pages_containing_login_portals.dorks": "Pages Containing Login Portals",
-        "/dorks/various_online_devices.dorks": "Various Online devices",
-        "/dorks/sensitive_online_shopping_info.dorks": "Sensitive Online Shopping Info",
+        "Web Server Detection": "dorks/web_server_detection.dorks",
+        "Footholds": "dorks/footholds.dorks", 
+        "Sensitive Directories": "dorks/sensitive_directories.dorks",
+        "Vulnerable Files": "dorks/vulnerable_files.dorks",
+        "Network or Vulnerability Data": "dorks/network_or_vulnerability_data.dorks",
+        "Files Containing Passwords": "dorks/file_containing_password.dorks",
+        "Files Containing Usernames": "dorks/files_containing_usernames.dorks",
+        "Files Containing Juicy Info": "dorks/files_containing_juicy_info.dorks",
+        "Advisories and Vulnerabilities": "dorks/advisories_and_vulnerabilities.dorks",
+        "Vulnerable Servers": "dorks/vulnerable_servers.dorks",
+        "Error Messages": "dorks/error_messages.dorks",
+        "Pages Containing Login Portals": "dorks/pages_containing_login_portals.dorks",
+        "Various Online Devices": "dorks/various_online_devices.dorks",
+        "Sensitive Online Shopping Info": "dorks/sensitive_online_shopping_info.dorks",
     }
+        
+    if os.path.isfile("./dorks"):
+        os.mkdir("./dorks") 
 
+        for file_cat in category.values():
+            open(file_cat, "a")
+        
     return category
 
 # First, retrieve all dorks from exploit-db
@@ -61,19 +68,41 @@ def get_dorks():
 
     # 1. Filter by data json type
     page_data = json_page["data"]
-    
+    cat_list = category_list()
+
     for category in page_data:
         page_cat = category["category"]
-        print(page_cat["cat_title"])
+        find_file = str(page_cat["cat_title"])
+        #print(page_cat["cat_title"])
+        #print(cat_list.get(find_file))
+
+    with open("dorks/footholds.dorks", "a") as f:
+        f.write("a")
 
     # 2. Filter by url_title type  
     for url in range(len(page_data)):
         # Take the title
         title_soup = BeautifulSoup(page_data[url]["url_title"], "html.parser") 
         # Filter the exact dorks we need
+        # Write all dorks to a default file
         dork = title_soup.find("a").contents[0]
+
+        page_cat = category["category"]
+        str(page_cat["cat_title"])     
+
+        # Retrieve file specific to name of category
+        # Use with block (close automatically)
+        cat_name = cat_list.get(page_data[url]["category"]["cat_title"])
+
+        with open(cat_name, "a") as cat_file:
+            cat_file.write(dork)
+            cat_file.write("\n")
+
         dorks_file.write(dork)
         dorks_file.write("\n")
+
+        
+        # Write to each separate file in /dorks dir
         
     return dorks_file
 
