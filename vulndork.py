@@ -84,6 +84,12 @@ def add_params(parser):
             required=False,
             help="scan a web-site for dork vulns")
     parser.add_argument(
+            '-f',
+            dest="dorksfile",
+            action="store",
+            required=False,
+            help="choose dorks file")
+    parser.add_argument(
             '-m',
             dest="urlsfile",
             action="store",
@@ -272,8 +278,6 @@ def dorks_len(dfile):
 
 if __name__ == "__main__":
     if db_exists() == True:
-        dorks_file = open("ghdb.dorks", "r")
-
         # Create parser for arguments
         parser = argparse.ArgumentParser(
                 description='Vulndork v0.1 - web-site vulnerability scanner based on Google Dorks',
@@ -283,6 +287,12 @@ if __name__ == "__main__":
         add_params(parser)
         args = parser.parse_args()
 
+        # Choose file (by default ghdb.dorks - all dorks file)
+        if args.dorksfile:
+            dorks_file = open(args.dorksfile, "r")
+        else:
+            dorks_file = open("ghdb.dorks", "r")
+
         if len(sys.argv) > 1:
             multiple_cstr = ""
             # Check for multiple clients scan
@@ -290,12 +300,11 @@ if __name__ == "__main__":
                 multiple_cstr = multiple_clients(args)
             # Parse dorks from dorks file
             dorks_results = parse_dorks(args, dorks_file, multiple_cstr)
-            # Save output into a file, in case of '-o' option was selected
+            # Save output to a file, in case of '-o' option was selected
             save_output(args, dorks_results)
         else:
-            print("usage: vulndork.py [-h] [-u URL] [-m URLSFILE] [-o OUTPUTFILE] [-d DELAY]")
+            print("usage: vulndork.py [-h] [-u URL] [-f DORKSFILE] [-m URLSFILE] [-o OUTPUTFILE] [-d DELAY]")
             print("use vulndork.py --help for more info")
         
-
     else:
         print("[-] Google Hacking Database not found. Run $ python3 scraper.py to retrieve the dorks")

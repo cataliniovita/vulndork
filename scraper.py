@@ -94,7 +94,7 @@ def get_dorks():
         # Use with block (close automatically)
         cat_name = cat_list.get(page_data[url]["category"]["cat_title"])
 
-        with open(cat_name, "w") as cat_file:
+        with open(cat_name, "a") as cat_file:
             cat_file.write(dork)
             cat_file.write("\n")
 
