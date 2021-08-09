@@ -148,7 +148,11 @@ def tor_session_cfg():
                        'https': 'socks5://127.0.0.1:9050'}
 
     ip_response = session.get("http://httpbin.org/ip")
-    print("[+] Your renewed IP address is {0}".format(ip_response.json()['origin']))
+
+    try:
+        print("[+] Your renewed IP address is {0}".format(ip_response.json()['origin']))
+    except json.decoder.JSONDecodeError:
+        print("[-] Can't print renewed IP address")
 
     return session
 
@@ -163,7 +167,7 @@ def parse_dorks(args, dfile, multiple_str):
 
     current_num = 1
     d_len = dorks_len(dfile)
-    dfile = open("ghdb.dorks", "r")
+    dfile = open(args.dorksfile, "r")
 
     # Generate language codes list
     language_list = language_code()
@@ -221,12 +225,16 @@ def parse_dorks(args, dfile, multiple_str):
             print("[+] All dorks parsed")
             break
 
+        # Print vulnerable sites
         if dorks_results:
+            print("[*] Vulnerable links found:")
             for result in dorks_results:
                 print(result)
         # Sleep 1 second if we don't find any results (need for renew_ip delay)
         else:
             time.sleep(2)
+
+        print("")
 
     return dorks_results
 
@@ -267,8 +275,6 @@ def renew_ip():
         print("[!] Your IP address is being renewed...")
 
 def dorks_len(dfile):
-    d_file = open("ghdb.dorks", "r")
-
     dork_len = 0
 
     while dfile.readline():
