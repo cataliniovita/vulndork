@@ -270,7 +270,7 @@ def multiple_clients(args):
  
 def renew_ip():
     with Controller.from_port(port = 9051) as controller:
-        controller.authenticate(password='cymedtor')
+        controller.authenticate(password='unknown')
         controller.signal(Signal.NEWNYM)
         print("[!] Your IP address is being renewed...")
 
