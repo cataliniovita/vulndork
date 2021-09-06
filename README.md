@@ -20,3 +20,8 @@ Google will start to block the requests after a limit between 6 and 10 (with low
 scraper.py
 2. tor connection -> https://linuxaria.com/howto/how-to-anonymize-the-programs-from-your-terminal-with-torify
 3. create the ip rotator
+
+
+## Improvement
+
+A significant improvement of this tool will be to remove the high delay between requests. You can do that by using some of [AWS Lambda functions](https://aws.amazon.com/lambda/).
