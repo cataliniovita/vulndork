@@ -6,6 +6,12 @@
 
 ## Usage
 
+First, we need to extract all dorks from [exploit-db dorks](https://www.exploit-db.com/google-hacking-database). So, you have to run ``scraper.py`` script.
+
+``python3 scraper.py``
+
+All the GHDB will be saved into a directory called dorks then will be stored into different files, taken by dork category. 
+
 ## API Rating
 
 Google will start to block the requests after a limit between 6 and 10 (with low time delay between requests). So we need to increase the time delay and also add a random jitter. 
