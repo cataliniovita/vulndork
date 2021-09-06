@@ -14,9 +14,9 @@ All the GHDB will be saved into a directory called dorks then will be stored int
 
 ## API Rating
 
-### Google will start to block the requests after a limit between 6 and 10 (with low time delay between requests). So we need to increase the time delay and also add a random jitter.
+Google will start to block the requests after a limit between 6 and 10 (with low time delay between requests). So we need to increase the time delay and also add a random jitter.
 
-### Google also has blocked much of all TOR nodes so the rotations between TOR ip's is also unefficient.
+Google also has blocked much of all TOR nodes so the rotations between TOR ip's is also unefficient.
 
 1. create a python scraper to extract all google hacking database -> https://www.exploit-db.com/google-hacking-database	
 scraper.py
