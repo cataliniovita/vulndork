@@ -6,7 +6,7 @@
 
 ## Usage
 
-First, we need to extract all dorks from [exploit-db dorks](https://www.exploit-db.com/google-hacking-database). So, you have to run ``scraper.py`` script.
+First, we need to extract all dorks from [exploit-db dorks](https://www.exploit-db.com/google-hacking-database). So, you have to run ``scraper.py`` script with the following command:
 
 ``python3 scraper.py``
 
