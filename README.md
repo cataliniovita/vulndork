@@ -20,7 +20,7 @@ Google will start to block the requests after a limit between 6 and 10 (with low
 
 ### Install tor package
 
-Having a low API Rating, we will need to rotate the IP addresses for every request. For this, vulndork uses tor package:
++ Having a low API Rating, we will need to rotate the IP addresses for every request. For this, vulndork uses tor package:
 
 ```sudo apt-get install tor```
 
@@ -30,23 +30,23 @@ We need to open the ```/etc/tor/torrc``` file and uncomment the ```ControlPort 9
 
 #### 1. Generate TOR password
 
-*Tor is using a hashed password, so to generate it use the command below. We will need to insert the hashed password inside the tor config file.
++ Tor is using a hashed password, so to generate it use the command below. We will need to insert the hashed password inside the tor config file.
 
 ```tor --hash-password "passwordhere"```
 
 #### 2. Edit config file
 
-*Open the ```/etc/tor/torrc``` file with your favorite text editor and comment the line set before:*
++ Open the ```/etc/tor/torrc``` file with your favorite text editor and comment the line set before:
 
 ```#CookieAuthentication 0```
 
-*Find the ```#HashedControlPassword 16:2283409283049820409238409284028340238409238``` line and uncomment it and replace the password hash with **your password** generated at step 1 and save the changes.
++ Find the ```#HashedControlPassword 16:2283409283049820409238409284028340238409238``` line and uncomment it and replace the password hash with **your password** generated at step 1 and save the changes.
 
 ```HashedControlPassword 16:113BD60B17CD1E98609013B4426860D576F7096C189184808AFF551F65```
 
 #### 3. Restart TOR service
 
-*Restart TOR service and now it should be an available TOR network connection.*
++ Restart TOR service and now it should be an available TOR network connection.
 
 ```sudo /etc/init.d/tor restart```
 
