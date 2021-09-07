@@ -40,7 +40,7 @@ Open the ```/etc/tor/torrc``` file with your favorite text editor and comment th
 
 ```#CookieAuthentication 0```
 
-Find the ```#HashedControlPassword 16:2283409283049820409238409284028340238409238``` line and uncomment it and replace the password hash with your password generated at step 1 and save the changes.
+Find the ```#HashedControlPassword 16:2283409283049820409238409284028340238409238``` line and uncomment it and replace the password hash with **your password** generated at step 1 and save the changes.
 
 ```HashedControlPassword 16:113BD60B17CD1E98609013B4426860D576F7096C189184808AFF551F65```
 
