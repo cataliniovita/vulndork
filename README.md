@@ -24,7 +24,7 @@ Having a low API Rating, we will need to rotate the IP addresses for every reque
 
 ```sudo apt-get install tor```
 
-We need to open the ```/etc/tor/torrc``` file and uncomment the ```ControlPort 9051``` line. Also, set ```CookieAuthentication 0```.
+We need to open the ```/etc/tor/torrc``` file and uncomment the ```ControlPort 9051``` line.
 
 ### Set a password for TOR
 
@@ -43,7 +43,6 @@ Open the ```/etc/tor/torrc``` file with your favorite text editor and comment th
 Find the ```#HashedControlPassword 16:2283409283049820409238409284028340238409238``` line and uncomment it and replace the password hash with your password generated at step 1 and save the changes.
 
 ```HashedControlPassword 16:113BD60B17CD1E98609013B4426860D576F7096C189184808AFF551F65```
-
 
 #### 3. Restart TOR service
 
