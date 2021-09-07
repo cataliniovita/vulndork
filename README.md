@@ -20,6 +20,13 @@ First, we need to extract all dorks from [exploit-db dorks](https://www.exploit-
 
 All the GHDB will be saved into a directory called dorks then will be stored into different files, taken by dork category. 
 
+### Categories
+
+There are 14 dork categories, stored inside a dictionary and saved in different files. We can run vulndork without argument and the dork file will be, by default, ghdb.dorks. We need to specifify the site with the ```-u``` port.
+
+```python3 vulndork.py -u web-site.com```
+
+
 ## API Rating
 
 Google will start to block the requests after a limit between 6 and 10 (with low time delay between requests). So we need to increase the time delay and also add a random jitter.
