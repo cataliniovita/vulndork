@@ -18,11 +18,21 @@ Google will start to block the requests after a limit between 6 and 10 (with low
 
 ## IP address rotator
 
+### Install tor package
+
 Having a low API Rating, we will need to rotate the IP addresses for every request. For this, vulndork uses tor package:
 
 ```sudo apt-get install tor```
 
-We need to open the ```/etc/tor/torrc``` file and uncomment the ```ControlPort 9051``` line.
+We need to open the ```/etc/tor/torrc``` file and uncomment the ```ControlPort 9051``` line. Also, set ```CookieAuthentication 0```.
+
+### Set a password for Tor
+
+#### Generate your encrypted password
+
+Tor is using a hashed password, so to generate it use the command below. We will need to insert the hashed password inside the tor config file.
+
+```tor --hash-password "passwordhere"```
 
 ## Usage
 
