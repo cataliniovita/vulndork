@@ -4,6 +4,14 @@
 
 ## Installation
 
+For the installation step, you will just need python3. Vulndork is written with Python 2.7.18
+
+```
+git clone https://github.com/cataiovita/vulndork/
+cd vulndork
+pip install -r requirements.txt
+```
+
 ## Usage
 
 First, we need to extract all dorks from [exploit-db dorks](https://www.exploit-db.com/google-hacking-database). So, you have to run ``scraper.py`` script with the following command:
