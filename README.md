@@ -52,7 +52,7 @@ We need to open the ```/etc/tor/torrc``` file and uncomment the ```ControlPort 9
 
 ## Usage
 
-First, we need to extract all dorks from [exploit-db dorks](https://www.exploit-db.com/google-hacking-database). So, you have to run ``scraper.py`` script with the following command:
++ First, we need to extract all dorks from [exploit-db dorks](https://www.exploit-db.com/google-hacking-database). So, you have to run ``scraper.py`` script with the following command:
 
 ``python3 scraper.py``
 
@@ -60,7 +60,7 @@ All the GHDB will be saved into a directory called dorks then will be stored int
 
 ### Categories
 
-There are 14 dork categories, stored inside a dictionary and saved inside different files. We can run vulndork without argument and the dork file will be, by default, ghdb.dorks. We need to specifify the site with the ```-u``` port.
++ There are 14 dork categories, stored inside a dictionary and saved inside different files. We can run vulndork without argument and the dork file will be, by default, ghdb.dorks. We need to specifify the site with the ```-u``` port.
 
 ```python3 vulndork.py -u web-site.com```
 
