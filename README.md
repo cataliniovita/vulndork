@@ -2,6 +2,10 @@
 
 ## Introduction
 
+Vulndork is an OSINT tool, based on Google Dorks. Google dorks are specific filters applied to google search strings. Exploit-db have a public database of dorks, called (Google Hacking Database)[https://www.exploit-db.com/google-hacking-database]. Vulndork use this database and tries to make continuous google searches to check for vulnerable pages. A specific possible dork which indicates a vulnerable web-site looks like:
+
+```inurl /admin/login.php intitle panel admin```
+
 ## Installation
 
 For the installation step, you will just need python3. Vulndork is written with Python 2.7.18
