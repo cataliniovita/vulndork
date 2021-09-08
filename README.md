@@ -70,6 +70,12 @@ All the GHDB will be saved into a directory called dorks then will be stored int
 
 ```python3 vulndork.py -u web-site.com```
 
+### Time delay
+
++ Vulndork also has an extra delay which can be added, if Google is blocking you. You can add, for example, an extra delay of 10 seconds between the requests.  
+
+```python3 vulndork.py -u web-site.com -f dorks/footholds.dork -d 10```
+
 ## Improvement
 
 A significant improvement of this tool will be to remove the high delay between requests. You can do that by using some of [AWS Lambda functions](https://aws.amazon.com/lambda/).
