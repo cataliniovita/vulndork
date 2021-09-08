@@ -2,9 +2,11 @@
 
 ## Introduction
 
-Vulndork is an OSINT tool, based on Google Dorks. Google dorks are specific filters applied to google search strings. Exploit-db have a public database of dorks, called (Google Hacking Database)[https://www.exploit-db.com/google-hacking-database]. Vulndork use this database and tries to make continuous google searches to check for vulnerable pages. A specific possible dork which indicates a vulnerable web-site looks like:
+Vulndork is an OSINT tool, based on Google Dorks. Google dorks are specific filters applied to google search strings. Exploit-db have a public database of dorks, called [oogle Hacking Database](https://www.exploit-db.com/google-hacking-database). Vulndork use this database and tries to make continuous google searches to check for vulnerable pages. A specific possible dork which indicates a vulnerable web-site looks like:
 
 ```inurl /admin/login.php intitle panel admin```
+
+This dork indicates that is looking for a login.php page inside admin directory, having panel admin in the title of the page. This could be a possible attack vector, so a vulnerability is found.
 
 ## Installation
 
@@ -18,7 +20,7 @@ pip install -r requirements.txt
 
 ## API Rating
 
-Google will start to block the requests after a limit between 6 and 10 (with low time delay between requests). So we need to increase the time delay and also add a random jitter. Also, a random language selector is used and an IP address rotator.
+Google will start to block the requests after a limit between 6 and 10 (with low time delay between requests). So we need to increase the time delay and also add a random jitter for every requests. Also, we're using an User-Agents rotator, a google language randomizer and an IP Address rotator.
 
 ## IP address rotator
 
