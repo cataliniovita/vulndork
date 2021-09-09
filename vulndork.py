@@ -281,7 +281,11 @@ def renew_ip(args):
     password = args.password
 
     with Controller.from_port(port = 9051) as controller:
+<<<<<<< HEAD
         controller.authenticate(password=password)
+=======
+        controller.authenticate(password='unknown')
+>>>>>>> 30206f2c392b3fea0cf41e92335f81a9837d4926
         controller.signal(Signal.NEWNYM)
 
 def dorks_len(dfile):
