@@ -68,13 +68,19 @@ All the GHDB will be saved into a directory called dorks then will be stored int
 
 + There are 14 dork categories, stored inside a dictionary and saved inside different files. We can run vulndork without argument and the dork file will be, by default, ghdb.dorks. We need to specifify the site with the ```-u``` port.
 
-```python3 vulndork.py -u web-site.com```
+```python3 vulndork.py -d web-site.com```
 
 ### Time delay
 
 + Vulndork also has an extra delay which can be added, if Google is blocking you. You can add, for example, an extra delay of 10 seconds between the requests.  
 
-```python3 vulndork.py -u web-site.com -f dorks/footholds.dork -d 10```
+```python3 vulndork.py -d web-site.com -f dorks/footholds.dork -r 10```
+
+### TOR ip address rotator
+
++ You can use TOR, after you get through the steps above, using the ``-p`` parameter, representing the password of TOR.
+
+```python3 vulndork.py -d web-site.com -p passwordhere```
 
 ## Improvement
 
