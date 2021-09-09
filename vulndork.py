@@ -78,8 +78,8 @@ def update_check():
 # Add parameters to our program
 def add_params(parser):
     parser.add_argument(
-            '-u',
-            dest="url",
+            '-d',
+            dest="domain",
             action="store",
             required=False,
             help="scan a web-site for dork vulns")
@@ -102,11 +102,17 @@ def add_params(parser):
             required=False,
             help="save scan result to file")
     parser.add_argument(
-            '-d',
-            dest="delay",
+            '-r',
+            dest="randomdelay",
             action="store",
             required=False,
             help="set delay time between requests (40s by default)")
+    parser.add_argument(
+            '-p',
+            dest="password",
+            action="store",
+            required=False,
+            help="password for TOR (ip address rotator)")
 
 # Clone the language code repo
 def language_code():
@@ -150,6 +156,7 @@ def tor_session_cfg():
     ip_response = session.get("http://httpbin.org/ip")
 
     try:
+        print("[!] Your IP address is being renewed...")
         print("[+] Your renewed IP address is {0}".format(ip_response.json()['origin']))
     except json.decoder.JSONDecodeError:
         print("[-] Can't print renewed IP address")
@@ -159,8 +166,8 @@ def tor_session_cfg():
 def parse_dorks(args, dfile, multiple_str):
     dorks_results = []
     # Set delay for requests
-    if args.delay:
-        delay = int(args.delay)
+    if args.randomdelay:
+        delay = int(args.randomdelay)
     # Default delay - 40 s
     else:
         delay = 40
@@ -180,9 +187,10 @@ def parse_dorks(args, dfile, multiple_str):
             
         print("[*] Current dork is: " + current_dork.strip("\n") + " (" + str(current_num) + "/" + str(d_len) + ")")
 
-        # Create a new tor session
-        session = tor_session_cfg()
-        renew_ip()
+        # Create a new tor session if password argument selected
+        if args.password != '' and args.password != None:
+            session = tor_session_cfg()
+            renew_ip(args)
                 
         current_num += 1
 
@@ -195,15 +203,15 @@ def parse_dorks(args, dfile, multiple_str):
             add_site = multiple_str + " " + current_dork
             add_site = add_site.strip('\n')
             print(add_site)
-        elif args.url:
-            add_site = "site:" + args.url + " " + current_dork
+        elif args.domain:
+            add_site = "site:" + args.domain + " " + current_dork
             add_site = add_site.strip('\n')
         else:
             print("[-] No url or multiple urls found")
             return
  
         # Randomize a jitter
-        rand_time = randint(1, 9)
+        rand_time = randint(1, 12)
         print("[!] Random delay is " + str(rand_time) + " seconds")
         delay += rand_time
 
@@ -268,11 +276,13 @@ def multiple_clients(args):
 
     return client_string
  
-def renew_ip():
+def renew_ip(args):
+    # Grab the TOR password from args
+    password = args.password
+
     with Controller.from_port(port = 9051) as controller:
-        controller.authenticate(password='cymedtor')
+        controller.authenticate(password=password)
         controller.signal(Signal.NEWNYM)
-        print("[!] Your IP address is being renewed...")
 
 def dorks_len(dfile):
     dork_len = 0
@@ -309,7 +319,7 @@ if __name__ == "__main__":
             # Save output to a file, in case of '-o' option was selected
             save_output(args, dorks_results)
         else:
-            print("usage: vulndork.py [-h] [-u URL] [-f DORKSFILE] [-m URLSFILE] [-o OUTPUTFILE] [-d DELAY]")
+            print("usage: vulndork.py [-h] [-d DOMAIN] [-f DORKSFILE] [-m URLSFILE] [-o OUTPUTFILE] [-r RANDOM DELAY]")
             print("use vulndork.py --help for more info")
         
     else:

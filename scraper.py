@@ -88,7 +88,7 @@ def get_dorks():
         dork = title_soup.find("a").contents[0]
 
         page_cat = category["category"]
-        str(page_cat["cat_title"])     
+        str(page_cat["cat_title"]) 
 
         # Retrieve file specific to name of category
         # Use with block (close automatically)
