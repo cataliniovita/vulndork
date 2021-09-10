@@ -66,7 +66,7 @@ All the GHDB will be saved into a directory called dorks then will be stored int
 
 ### Categories
 
-+ There are 14 dork categories, stored inside a dictionary and saved inside different files. We can run vulndork without argument and the dork file will be, by default, ghdb.dorks. We need to specifify the site with the ```-u``` port.
++ There are 14 dork categories, stored inside a dictionary and saved inside different files. We can run vulndork without argument and the dork file will be, by default, ghdb.dorks. Vulndork also uses a language randomization, cloning a gist which contains google-language format list. To use vulndork in minimal form, we need to specifify the site with the ```-d``` argument.
 
 ```python3 vulndork.py -d web-site.com```
 
