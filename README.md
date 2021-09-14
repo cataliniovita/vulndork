@@ -78,9 +78,7 @@ All the GHDB will be saved into a directory called dorks then will be stored int
 
 ### Language rotator
 
-+ For every google search, vulndork rotates the google-lanaguages codes, doing this using a list, contained into a gist. This method helps the API Rating, and reduce the change to get a 429 response. This gist is cloned inside the script:
-
-[google language codes](https://gist.github.com/cataiovita/8b60240ca6daaedd5a9f20f34617b4a7)
++ For every google search, vulndork rotates the google-lanaguages codes, doing this using a list, contained into a gist. This method helps the API Rating, and reduce the change to get a 429 response. This gist is cloned inside the script: [google language codes](https://gist.github.com/cataiovita/8b60240ca6daaedd5a9f20f34617b4a7)
 
 ### TOR ip address rotator
 
