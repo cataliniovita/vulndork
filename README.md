@@ -1,5 +1,7 @@
 # vulndork
 
+Dorking for vulnerabilities
+
 ## Introduction
 
 **Vulndork** is an OSINT tool, based on Google Dorks. Google dorks are specific filters applied to google search strings. Exploit-db have a public database of dorks, called [Google Hacking Database](https://www.exploit-db.com/google-hacking-database) and vulndork use this database, trying to make continuous google searches to check for vulnerable pages. A specific possible dork which indicates a vulnerable web-site looks like:
