@@ -17,12 +17,14 @@ from random_user_agent.params import SoftwareName, OperatingSystem
 from PyQt5 import QtWidgets, uic
 
 def banner():
-    print(
-"""__     __        ___           __            __
-\_\   /_/__  __ /  /______ ___/ /___   ____ / /__
- \ \_/ // /_/ //__// __  // _  // _ \ / __//_ '_/
-  \___//_____//__//_/ /_/ \_,_/ \___//_/  /_/\_\  
-                                                  v0.1 
+    print("""
+                 _            _             _
+                | |          | |           | |
+     _   _ _   _| | ____   __| | ___   ____| |  _
+    | | | | | | | ||  _ \ / _  |/ _ \ / ___| |_/ )
+     \ V /| |_| | || | | ( (_| | |_| | |   |  _ (
+      \_/ |____/ \_|_| |_|\____|\___/|_|   |_| \_)
+                                v0.1
             """)
 
 def info_usage():
@@ -222,8 +224,8 @@ def parse_dorks(args, dfile, multiple_str):
         dorks_results += googlesearch.search(
                 add_site,
                 lang=code,
-                stop=2,
-                num=2,
+                stop=1,
+                num=1,
                 pause=int(delay),
                 user_agent=user_agent)
 
